@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "709990638449",
+    "firebase_url": "https://happytalk-6a308.firebaseio.com",
+    "project_id": "happytalk-6a308",
+    "storage_bucket": "happytalk-6a308.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709990638449:android:e7b017d2ea12b417",
+        "android_client_info": {
+          "package_name": "com.diamong.happytalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709990638449-9cjapqheqaqraes3kc8uk42abbnmc6mb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diamong.happytalk",
+            "certificate_hash": "21f4a81630e501b3d8c5578a3d3afa5a67afb4c6"
+          }
+        },
+        {
+          "client_id": "709990638449-3sd2ed9q48art8bbs0md2u51g6ef06rb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAPhmQPMsE2IyOF6rgqTrIny7DoK6TiyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709990638449-3sd2ed9q48art8bbs0md2u51g6ef06rb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
