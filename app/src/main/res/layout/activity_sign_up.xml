@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="center"
     android:orientation="vertical"
-    android:layout_width="match_parent"
     android:padding="8dp"
+    android:gravity="center"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
-
+    tools:context=".SignUpActivity">
     <ImageView
-
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/signup"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:src="@drawable/lonin01" />
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.TextInputLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/loginactivity_edittext_id"
+            android:id="@+id/signupactivity_edittext_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID" />
+            android:hint="email"
+            android:inputType="textEmailAddress" />
     </android.support.design.widget.TextInputLayout>
-
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/loginactivity_edittext_password"
+            android:id="@+id/signupactivity_edittext_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="password"
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/loginactivity_button_login"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1E88E5"
-        android:text="로그인"
-        android:textSize="24sp" />
+        android:layout_height="wrap_content">
 
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/signupactivity_edittext_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="name"
+            android:inputType="textPersonName" />
+    </android.support.design.widget.TextInputLayout>
     <Button
-        android:id="@+id/loginactivity_button_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="#90CAF9"
         android:text="회원가입"
-        android:textSize="24sp" />
-
-
+        android:id="@+id/signupactivity_button_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

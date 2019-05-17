@@ -1,11 +1,13 @@
 package com.diamong.happytalk;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     private void InitFirst() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         linearLayout = findViewById(R.id.linerlayout_splash);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -37,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
                             //Log.d(TAG, "Config params updated: " + updated);
-                            Toast.makeText(MainActivity.this, "Fetch and activate succeeded",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "환영합니다.",
+                                    Toast.LENGTH_LONG).show();
 
                         } else {
                             Toast.makeText(MainActivity.this, "Fetch failed",
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             });
 
             builder.create().show();
+        } else{
+            startActivity(new Intent(this,LogInActivity.class));
         }
 
         /*String welcomeMessage = mFirebaseRemoteConfig.getString("Welcome to my awesome app!");
