@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             builder.create().show();
         } else{
             startActivity(new Intent(this,LogInActivity.class));
+            finish();
         }
 
         /*String welcomeMessage = mFirebaseRemoteConfig.getString("Welcome to my awesome app!");

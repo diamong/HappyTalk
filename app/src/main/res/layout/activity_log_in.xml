@@ -24,7 +24,8 @@
             android:id="@+id/loginactivity_edittext_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ID" />
+            android:hint="ID"
+            android:inputType="textEmailAddress" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout

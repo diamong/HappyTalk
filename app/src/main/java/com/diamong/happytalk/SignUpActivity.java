@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.diamong.happytalk.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,12 +27,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class SignUpActivity extends AppCompatActivity {
     private static final int PICK_ALBUM = 1000;
     private EditText email, password, name;
     private Button buttonSignUp;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    private ImageView profile;
+    private CircleImageView profile;
     private Uri imageUri;
 
     @Override
@@ -78,6 +81,10 @@ public class SignUpActivity extends AppCompatActivity {
                                     //유저 프로필 이미지 업로드 후 Url 얻어오는 코드
                                     final StorageReference filepath = FirebaseStorage.getInstance().getReference().child("userimages")
                                             .child(uid);
+
+                                    if (imageUri==null) imageUri=Uri.parse("android.resource://"+getPackageName()+"/"+R.drawable.noprofile);
+                                    
+
                                     filepath.putFile(imageUri)
                                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                 @Override
@@ -92,9 +99,8 @@ public class SignUpActivity extends AppCompatActivity {
                                                             FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
                                                         }
                                                     });
-
-
                                                 }
+                                                
                                             });
                                     /*filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                         @Override
@@ -137,7 +143,12 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_ALBUM && resultCode == RESULT_OK) {
-            profile.setImageURI(data.getData());
+
+            Glide.with(SignUpActivity.this)
+                    .load(data.getData())
+                    .centerCrop()
+                    .into(profile);
+            //profile.setImageURI(data.getData());
             imageUri = data.getData();
         }
     }
