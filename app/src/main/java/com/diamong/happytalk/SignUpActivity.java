@@ -1,27 +1,38 @@
 package com.diamong.happytalk;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.diamong.happytalk.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class SignUpActivity extends AppCompatActivity {
+    private static final int PICK_ALBUM = 1000;
     private EditText email, password, name;
     private Button buttonSignUp;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
+    private ImageView profile;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,15 @@ public class SignUpActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(Color.parseColor(splash_background));
 
 
+        profile = findViewById(R.id.signupactivity_iv_profile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_ALBUM);
+            }
+        });
         email = findViewById(R.id.signupactivity_edittext_email);
         password = findViewById(R.id.signupactivity_edittext_password);
         name = findViewById(R.id.signupactivity_edittext_name);
@@ -50,18 +70,75 @@ public class SignUpActivity extends AppCompatActivity {
                             .createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    UserModel userModel = new UserModel();
-                                    userModel.userName = name.getText().toString();
+                                public void onComplete(@NonNull final Task<AuthResult> task) {
 
-                                    String uid = task.getResult().getUser().getUid();
 
-                                    FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
+                                    final String uid = task.getResult().getUser().getUid();
+
+                                    //유저 프로필 이미지 업로드 후 Url 얻어오는 코드
+                                    final StorageReference filepath = FirebaseStorage.getInstance().getReference().child("userimages")
+                                            .child(uid);
+                                    filepath.putFile(imageUri)
+                                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                        @Override
+                                                        public void onSuccess(Uri uri) {
+                                                            final String imageURL = uri.toString();
+                                                            UserModel userModel = new UserModel();
+                                                            userModel.userName = name.getText().toString();
+                                                            userModel.profileImageUrl = imageURL;
+                                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
+                                                        }
+                                                    });
+
+
+                                                }
+                                            });
+                                    /*filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                                            //String imageURL=storageReference.getDownloadUrl().toString();
+                                            Task<Uri> imageURL=task.getResult().getStorage().getDownloadUrl();
+
+                                            UserModel userModel = new UserModel();
+                                            userModel.userName = name.getText().toString();
+                                            userModel.profileImageUrl = imageURL.toString();
+                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
+                                        }
+                                    });*/
+
+                                    /*FirebaseStorage.getInstance().getReference().child("userimages").child(uid).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("userimages").child(uid);
+
+                                            Task<Uri> imageUrl = task.getResult().getStorage().getDownloadUrl();
+                                            while (!imageUrl.isComplete()) ;
+
+                                            UserModel userModel = new UserModel();
+                                            userModel.userName = name.getText().toString();
+                                            userModel.profileImageUrl = imageUrl.toString();
+                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
+                                        }
+                                    });*/
+
 
                                 }
                             });
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_ALBUM && resultCode == RESULT_OK) {
+            profile.setImageURI(data.getData());
+            imageUri = data.getData();
+        }
     }
 }
