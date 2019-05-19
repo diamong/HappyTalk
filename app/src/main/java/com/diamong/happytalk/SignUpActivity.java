@@ -1,5 +1,6 @@
 package com.diamong.happytalk;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -36,11 +38,14 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private CircleImageView profile;
     private Uri imageUri;
+    private ProgressDialog loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        loadingBar = new ProgressDialog(this);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         String splash_background = mFirebaseRemoteConfig.getString("splash_background");
@@ -69,6 +74,13 @@ public class SignUpActivity extends AppCompatActivity {
                 if (email.getText().toString().isEmpty() || password.getText().toString().isEmpty() || name.getText().toString().isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "빈칸을 입력하세요", Toast.LENGTH_SHORT).show();
                 } else {
+
+                    loadingBar.setTitle("Set Profile Image");
+                    loadingBar.setMessage("Please wait, your profile image is updating...");
+                    loadingBar.setCanceledOnTouchOutside(true);
+                    loadingBar.show();
+
+                    buttonSignUp.setVisibility(View.INVISIBLE);
                     FirebaseAuth.getInstance()
                             .createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
@@ -96,7 +108,14 @@ public class SignUpActivity extends AppCompatActivity {
                                                             UserModel userModel = new UserModel();
                                                             userModel.userName = name.getText().toString();
                                                             userModel.profileImageUrl = imageURL;
-                                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel);
+                                                            FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    loadingBar.dismiss();
+                                                                    SignUpActivity.this.finish();
+                                                                }
+                                                            });
                                                         }
                                                     });
                                                 }

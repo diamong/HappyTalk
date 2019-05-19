@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BodyActivity">
+
+    <FrameLayout
+        android:id="@+id/bodyactivity_framelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bodyactivity_bottom_navigationview"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true">
+
+    </FrameLayout>
     <android.support.design.widget.BottomNavigationView
         app:menu="@menu/bottom_navigation_main"
         app:itemIconTint="@android:color/white"
