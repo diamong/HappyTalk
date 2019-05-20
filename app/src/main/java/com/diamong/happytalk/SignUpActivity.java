@@ -80,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
                     loadingBar.setCanceledOnTouchOutside(true);
                     loadingBar.show();
 
-                    buttonSignUp.setVisibility(View.INVISIBLE);
+                    buttonSignUp.setEnabled(false);
                     FirebaseAuth.getInstance()
                             .createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
@@ -108,11 +108,13 @@ public class SignUpActivity extends AppCompatActivity {
                                                             UserModel userModel = new UserModel();
                                                             userModel.userName = name.getText().toString();
                                                             userModel.profileImageUrl = imageURL;
+                                                            userModel.uId=FirebaseAuth.getInstance().getUid();
                                                             FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(userModel)
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void aVoid) {
                                                                     loadingBar.dismiss();
+                                                                    buttonSignUp.setEnabled(true);
                                                                     SignUpActivity.this.finish();
                                                                 }
                                                             });

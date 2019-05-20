@@ -1,7 +1,9 @@
 package com.diamong.happytalk.fragment;
 
 
+import android.app.ActivityOptions;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +16,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.diamong.happytalk.Chat.ChatActivity;
 import com.diamong.happytalk.R;
 import com.diamong.happytalk.model.UserModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,11 +58,17 @@ public class PeopleFragment extends Fragment {
 
         public PeopleFragmentRecyclerviewAdapter() {
             userModels = new ArrayList<>();
+            final String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                     userModels.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        UserModel userModel = snapshot.getValue(UserModel.class);
+                        if (userModel.uId.equals(myUid)){
+                            continue;
+                        }
                         userModels.add(snapshot.getValue(UserModel.class));
                     }
                     notifyDataSetChanged();
@@ -79,12 +89,23 @@ public class PeopleFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
             Glide.with(viewHolder.itemView.getContext()).load(userModels.get(i).profileImageUrl)
                     .apply(new RequestOptions().circleCrop())
                     .into(((CustomViewHolder)viewHolder).imageView);
 
             ((CustomViewHolder)viewHolder).textView.setText(userModels.get(i).userName);
+
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                    intent.putExtra("destinationUid",userModels.get(i).uId);
+                    ActivityOptions activityOptions =
+                            ActivityOptions.makeCustomAnimation(v.getContext(),R.anim.from_left,R.anim.to_right);
+                    startActivity(intent,activityOptions.toBundle());
+                }
+            });
 
 
         }

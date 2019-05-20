@@ -33,7 +33,7 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        //firebaseAuth.signOut();
+        firebaseAuth.signOut();
 
         id = findViewById(R.id.loginactivity_edittext_id);
         password = findViewById(R.id.loginactivity_edittext_password);
@@ -50,7 +50,16 @@ public class LogInActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginEvent();
+                String mId,mPassword;
+                mId=id.getText().toString();
+                mPassword=password.getText().toString();
+                if (mId.isEmpty()||mPassword.isEmpty()) {
+                    Toast.makeText(LogInActivity.this, "아이디와 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    loginEvent();
+                }
 
             }
         });
